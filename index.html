@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiny GPT Playground - Trí Tuệ Nhân Tạo Mini</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #6366f1;
+      --accent: #ec4899;
+      --cyan: #06b6d4;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --code-bg: #060911;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand { display: flex; align-items: center; gap: 0.75rem; }
+    .brand-icon {
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+    .brand-text h1 { font-size: 1.25rem; font-weight: 700; }
+    .brand-text p { font-size: 0.8rem; color: var(--text-muted); }
+
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 1.75rem;
+    }
+
+    @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.75rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    textarea:focus { border-color: var(--primary); }
+
+    .quick-prompts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Fira Code', monospace;
+    }
+    .chip:hover { background: rgba(99, 102, 241, 0.2); border-color: var(--primary); }
+
+    .btn-generate {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.9rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    .terminal-body {
+      flex: 1;
+      background: var(--code-bg);
+      border-radius: 12px;
+      padding: 1.25rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #e2e8f0;
+      min-height: 280px;
+      max-height: 480px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border: 1px solid var(--card-border);
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: var(--cyan);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🤖</div>
+      <div class="brand-text">
+        <h1>Tiny GPT Playground</h1>
+        <p>Mô hình Transformer do học sinh tự làm</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h3>⚙️ Thiết Lập Sinh Văn Bản</h3>
+      <textarea id="prompt">ROMEO:</textarea>
+      <div class="quick-prompts">
+        <span class="chip" onclick="document.getElementById('prompt').value='ROMEO:\n'">ROMEO:</span>
+        <span class="chip" onclick="document.getElementById('prompt').value='JULIET:\n'">JULIET:</span>
+        <span class="chip" onclick="document.getElementById('prompt').value='First Citizen:\n'">First Citizen:</span>
+      </div>
+      <label>Độ sáng tạo (Temperature): <b id="tVal">0.8</b></label>
+      <input type="range" id="tempRange" min="0.1" max="1.5" step="0.1" value="0.8" oninput="document.getElementById('tVal').textContent=this.value">
+      <button class="btn-generate" onclick="generateText()">✨ Bắt Đầu Sinh Văn Bản</button>
+    </section>
+
+    <section class="card">
+      <h3>💻 Màn hình AI Console</h3>
+      <div class="terminal-body" id="terminalOutput">// Nhấn nút "Bắt Đầu Sinh Văn Bản" để xem Tiny GPT sáng tác...</div>
+    </section>
+  </main>
+</body>
+</html>
